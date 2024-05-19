@@ -4,24 +4,29 @@ import Image from "next/image";
 import axios from "axios";
 import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
+import Weather from "../../components/Weather";
+import Spinner from "../../components/Spinner";
 
 export default function Home() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState({});
-  const [loadings, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=dubai&units=imperial&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`;
 
   const fetchWeather = (e) => {
     e.preventDefault();
     setLoading(true);
     axios.get(url).then((response) => {
       setWeather(response.data);
-      console.log(response.data);
       setLoading(false);
     });
     setCity("");
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <>
@@ -33,7 +38,10 @@ export default function Home() {
         className="object-cover"
       />
       <div className="flex relative justify-between items-center max-w-[500px] w-full m-auto pt-4 text-white z-10">
-        <form className="flex justify-between items-center w-full m-auto bg-transparent border p-3 border-gray-300 text-white rounded-2xl">
+        <form
+          onSubmit={fetchWeather}
+          className="flex justify-between items-center m-auto bg-transparent border p-3 border-gray-300 text-white rounded-2xl"
+        >
           <div>
             <input
               type="text"
@@ -48,6 +56,8 @@ export default function Home() {
           </div>
         </form>
       </div>
+
+      {weather.main && <Weather data={weather} />}
     </>
   );
 }
