@@ -11,51 +11,44 @@ export default function Home() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`;
 
-  const fetchWeather = (e) => {
+  const fetchWeather = async (e) => {
     e.preventDefault();
     setLoading(true);
-    axios.get(url).then((response) => {
+    try {
+      const response = await axios.get(url);
       setWeather(response.data);
-      setLoading(false);
-    });
+    } catch (error) {
+      console.error("Error fetching the weather data", error);
+    }
+    setLoading(false);
     setCity("");
   };
 
   return (
-    <>
-      <div>
-        <div className="grid place-items-center absolute top-0 left-0 right-0 bottom-0 bg-black/40 z-[10]"></div>
-        <Image
-          src="/bg.jpg"
-          fill
-          alt="Background pic"
-          className="object-cover"
+    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-500 text-white p-4 gap-10">
+      <h1 className="text-4xl font-bold mb-4">Weather App</h1>
+      <form
+        onSubmit={fetchWeather}
+        className="flex items-center w-full max-w-md"
+      >
+        <input
+          type="text"
+          placeholder="Enter city name"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          className="flex-grow p-2 rounded-l-lg text-black"
         />
-        <div className="">
-          <div className="flex flex-col relative justify-between items-center max-w-[500px] w-full m-auto pt-4 text-white z-10">
-            <form
-              onSubmit={fetchWeather}
-              className="flex justify-between items-center m-auto bg-transparent border p-3 border-gray-300 text-white rounded-2xl"
-            >
-              <div>
-                <input
-                  type="text"
-                  placeholder="Search City"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="bg-transparent border-none text-white focus:outline-none text-2xl"
-                />
-                <button onClick={fetchWeather}>
-                  <BsSearch size={20} />
-                </button>
-              </div>
-            </form>
-            {weather && <Weather data={weather} loading={loading} />}
-          </div>
-        </div>
-      </div>
-    </>
+        <button
+          type="submit"
+          className="p-2 bg-blue-700 rounded-r-lg hover:bg-blue-800 transition"
+        >
+          <BsSearch size={24} />
+        </button>
+      </form>
+      {loading && <p className="mt-4">Loading...</p>}
+      {weather && <Weather data={weather} />}
+    </div>
   );
 }

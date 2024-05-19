@@ -1,4 +1,8 @@
+/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply bg-blue-500 text-white;
+}

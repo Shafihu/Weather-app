@@ -1,35 +1,18 @@
+// components/Weather.js
 import React from "react";
-import Image from "next/image";
 
 const Weather = ({ data }) => {
-  console.log(data);
+  const { temp, feels_like, humidity } = data.main;
+  const windSpeed = data.wind.speed;
+
   return (
-    <>
-      <div className="text-white font-bold flex bg-green-400 flex-col justify-between max-w-[500px] w-full h-[90vh] m-auto p-4 z-[99]">
-        <div className="flex flex-col items-center">
-          <Image src="/cloud.png" alt="cloud image" width={60} height={60} />
-          <p className="text-9xl">{data && data.weather[0].main}</p>
-        </div>
-      </div>
-      <p className="text-6xl">{data && data.main.temp.toFixed(0)}&#176;</p>
-      <div className="text-center mt-4 text-white bg-black">
-        <p className="text-2xl font-semibold">Weather in {data && data.name}</p>
-        <div className="flex justify-around mt-4 text-xl">
-          <div>
-            <p>{data && data.main.feels_like.toFixed(0)}&#176;</p>
-            <p>Feels Like</p>
-          </div>
-          <div>
-            <p>{data && data.main.humidity}%</p>
-            <p>Humidity</p>
-          </div>
-          <div>
-            <p>{data && data.wind.speed.toFixed(0)} km/h</p>
-            <p>Winds</p>
-          </div>
-        </div>
-      </div>
-    </>
+    <div className="mt-8  p-6 rounded-2xl shadow-lg w-full max-w-md flex flex-col  items-center justify-center">
+      <h2 className="text-3xl font-bold mb-4">Weather in {data.name}</h2>
+      <div className="text-6xl font-bold mb-4">{temp.toFixed(0)}°C</div>
+      <div className="text-2xl mb-2">Feels Like: {feels_like.toFixed(0)}°C</div>
+      <div className="text-2xl mb-2">Humidity: {humidity}%</div>
+      <div className="text-2xl">Wind Speed: {windSpeed} m/s</div>
+    </div>
   );
 };
 
